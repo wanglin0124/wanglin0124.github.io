@@ -155,28 +155,117 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-article1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-28" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/28/article1/">珠儿与芝草</a>
+      <a class="article-title" href="/2017/12/29/28/">28</a>
     </h1>
   
 
         
-        <a href="/2017/12/28/article1/" class="archive-article-date">
-  	<time datetime="2017-12-28T08:47:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-28</time>
+        <a href="/2017/12/29/28/" class="archive-article-date">
+  	<time datetime="2017-12-29T09:07:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-29</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>　传说的灵隐寺房檐上，有一只不知织了几千年网的蜘蛛，有一天，佛对蜘蛛说：“人生最珍贵的是什么？”蜘蛛说：“是未得到。佛说：“你再想想”说完便走了。又过了一千年，佛又来问蜘蛛：“人生最珍贵的是什么？”<br>
-        
+        <p> startConnect: function () {<br>    var that = this;<br>    // 初始化蓝牙适配器<br>    wx.openBluetoothAdapter({<br>      success: function (res) {<br>        console.log(res, ‘蓝牙初始化’);<br>        that.getBluetoothAdapterState();<br>      },<br>      fail: function (err) {<br>        console.log(err);<br>        wx.showToast({<br>          title: ‘蓝牙初始化失败’,<br>          icon: ‘success’,<br>          duration: 2000<br>        })<br>        setTimeout(function () {<br>          wx.hideToast()<br>        }, 2000)<br>      }<br>    });<br>  },<br>  // 获取本机蓝牙适配器状态<br>  getBluetoothAdapterState: function () {<br>    var that = this;<br>    wx.getBluetoothAdapterState({<br>      success: function (res) {<br>        console.log(res, ‘ 获取本机蓝牙适配器状态’)<br>        var available = res.available,//蓝牙适配器是否可用<br>          discovering = res.discovering;//是否正在搜索设备<br>        if (!available) {<br>          wx.showToast({<br>            title: ‘设备无法开启蓝牙连接’,<br>            icon: ‘success’,<br>            duration: 2000<br>          })<br>          setTimeout(function () {<br>            wx.hideToast()<br>          }, 2000)<br>        }<br>        that.startBluetoothDevicesDiscovery();<br>      }<br>    })<br>  },<br>  //开始搜寻附近的蓝牙外围设备<br>  startBluetoothDevicesDiscovery: function () {<br>    var that = this;<br>    wx.startBluetoothDevicesDiscovery({<br>      services: [],<br>      success: function (res) {<br>        console.log(res, ‘开始搜寻附近的蓝牙外围设备’)<br>        if (res.isDiscovering) {//当前蓝牙适配器是否处于搜索状态<br>          that.onBluetoothDeviceFound();//监听寻找到新设备的事件<br>        } else {<br>          that.getBluetoothAdapterState(); // 获取本机蓝牙适配器状态,返回上一个接口<br>        }<br>      },<br>      fail: function (err) {<br>        console.log(err);<br>      }<br>    });<br>  },<br>  //监听寻找到新设备的事件<br>  onBluetoothDeviceFound: function () {<br>    var that = this;<br>    //监听寻找到新设备的事件<br>    wx.onBluetoothDeviceFound(function (res) {<br>      console.log(res)<br>      var deviceId = res.devices[0].deviceId;<br>      var ua = wx.getSystemInfoSync().platform;//获取设备信息<br>      console.log(deviceId)<br>      if (ua == ‘ios’) {<br>        var buff = res.devices[0].advertisData.slice(2, 8);//当前蓝牙设备的广播内容</p>
+<pre><code>    var arrayBuff = Array.prototype.map.call(new Uint8Array(buff), x =&gt; (&apos;00&apos; + x.toString(16)).slice(-2)).join(&apos;:&apos;); // 将 ArrayBuffer 数据转成 Base64 字符串 或 字符串  
+    var arrayMac = arrayBuff.toUpperCase();
+    if (arrayMac ==&apos;94:E3:6D:6A:70:2E&apos;) {
+
+      that.setData({
+        deviceId: deviceId
+      })
+      wx.stopBluetoothDevicesDiscovery({//停止搜索附近蓝牙的外围设备
+        success: function (res) {
+          console.log(res, &apos;停止搜索&apos;)
+        }
+      })
+      that.createBLEConnection()
+      // 连接设备                             
+    }
+  } else {
+    if (deviceId ==&apos;94:E3:6D:7F:B7:B9&apos;) {
+      that.setData({
+        deviceId: deviceId
+      })
+      wx.stopBluetoothDevicesDiscovery({//停止搜索附近蓝牙的外围设备
+        success: function (res) {
+          console.log(res, &apos;停止搜索&apos;)
+        }
+      })
+      that.createBLEConnection()
+    }
+  }
+})
+</code></pre><p>  },<br>  //连接设备<br>  createBLEConnection: function () {<br>    var that = this;<br>    wx.createBLEConnection({<br>      deviceId: that.data.deviceId,<br>      success: function (res) {<br>        console.log(res, ‘连接设备成功’);<br>        wx.showModal({<br>          title: ‘提示’,<br>          content: ‘微信连接成功’,<br>        })<br>        //获取蓝牙设备所有 service（服务）<br>        wx.getBLEDeviceServices({<br>          deviceId: that.data.deviceId,<br>          success: function (res) {<br>            console.log(‘所有 service（服务）:’, res.services)<br>            that.setData({ services: res.services[0].uuid });<br>            console.log(that.data.services);<br>            that.getBLEDeviceCharacteristics()//获取蓝牙设备所有 characteristic（特征值）<br>          },<br>          fail: function (res) {<br>            console.log(res, ‘获取蓝牙设备所有 service（服务）失败’);<br>          }<br>        })<br>      },<br>      fail: function (res) {<br>        that.startConnect()<br>        console.log(res, ‘连接设备失败’);<br>      }<br>    })<br>  },<br>  getBLEDeviceCharacteristics: function () {<br>    var that = this;<br>    wx.getBLEDeviceCharacteristics({//获取蓝牙设备所有 characteristic（特征值）<br>      deviceId: that.data.deviceId,<br>      serviceId: that.data.services,<br>      success: function (res) {<br>        console.log(res,’获取蓝牙设备所有特征值’);<br>        that.setData({<br>          writeDataUUID: res.characteristics[0].uuid,<br>          readDataUUID: res.characteristics[0].uuid<br>        });<br>        wx.notifyBLECharacteristicValueChange({// 启用 notify 功能<br>          state: true,<br>          deviceId: that.data.deviceId,<br>          serviceId: that.data.services,<br>          characteristicId: that.data.readDataUUID,<br>          success: function (res) {<br>            console.log(‘notify’, res)<br>          },<br>          fail: function (res) {<br>            console.log(‘notifyBLECharacteristicValueChange fail’, res.errMsg)<br>          }<br>        })<br>        wx.onBLECharacteristicValueChange(function (res) {<br>          console.log(‘onBLECharacteristicValueChange’, res);<br>          var buffer = Array.prototype.map.call(new Uint8Array(res.value), x =&gt; (‘00’ + x.toString(16)).slice(-2)).join(‘’);<br>          console.log(buffer,’监听的数据’);</p>
+<pre><code>        wx.closeBLEConnection({
+          deviceId: that.data.deviceId,
+          success: function (res) {
+            console.log(res);
+            wx.showModal({
+              title: &apos;提示&apos;,
+              content: &apos;结束&apos;,
+            })
+            that.setData({
+              deviceId: 0
+            })
+            wx.closeBluetoothAdapter({
+              success: function (res) {
+                wx.showModal({
+                  title: &apos;提示&apos;,
+                  content: &apos;释放了所有资源&apos;,
+                })
+              }
+            })
+          }
+        })
+    })
+    //第一次写入低功耗蓝牙设备的特征值的二进制数据值
+    setTimeout(function () {
+      console.log(that.data.lock)
+      let buffer = new ArrayBuffer(6);
+      let dataView = new DataView(buffer);
+      var checksum = 0;
+      dataView.setUint8(0, &apos;0xA1&apos;);
+      dataView.setUint8(1, &apos;0x55&apos;);
+      dataView.setUint8(2, &apos;0x06&apos;);
+      dataView.setUint8(3, that.data.lock);
+      var check = &apos;0xA1,0x55,0x06,&apos; + that.data.lock;
+      var check = check.split(&apos;,&apos;)
+      for (var i = 0; i &lt; check.length; i++) {
+        checksum ^= check[i]
+      }
+      checksum = ~checksum
+      console.log(checksum, &apos;checksum&apos;)
+      dataView.setUint8(4, checksum);
+      dataView.setUint8(5, &apos;0x55&apos;);
+
+      wx.writeBLECharacteristicValue({
+        deviceId: that.data.deviceId,
+        serviceId: that.data.services,
+        characteristicId: that.data.writeDataUUID,
+        value: buffer,
+        success: function (res) {
+          console.log(res, &apos;开锁写入成功&apos;);
+        },
+        fail: function (res) {
+          console.log(res, &apos;buff fail&apos;)
+        }
+      })
+    }, 1000)
+
+  }
+})
+</code></pre><p>  }<br>})</p>
+
       
 
       
@@ -184,33 +273,11 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">悲伤</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/佛教四大经典//" class="article-tag-list-link color2">佛教四大经典</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/28/article1/">展开全文 >></a>
+          <a class="article-more-a" href="/2017/12/29/28/">展开全文 >></a>
         </p>
       
 
@@ -296,6 +363,91 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/12/28/article/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-article1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/28/article1/">珠儿与芝草</a>
+    </h1>
+  
+
+        
+        <a href="/2017/12/28/article1/" class="archive-article-date">
+  	<time datetime="2017-12-28T08:47:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>　传说的灵隐寺房檐上，有一只不知织了几千年网的蜘蛛，有一天，佛对蜘蛛说：“人生最珍贵的是什么？”蜘蛛说：“是未得到。佛说：“你再想想”说完便走了。又过了一千年，佛又来问蜘蛛：“人生最珍贵的是什么？”<br>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">悲伤</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/佛教四大经典//" class="article-tag-list-link color2">佛教四大经典</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/12/28/article1/">展开全文 >></a>
         </p>
       
 
@@ -555,27 +707,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
         <ul class="search-ul">
           
             <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接1</a>
+              <a href="http://blog.csdn.net/xuezhisdc/article/details/53130383" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>hexo配置中英文对照表</a>
             </li>
           
             <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接2</a>
+              <a href="http://element-cn.eleme.io/#/zh-CN" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Element-vue组件库</a>
             </li>
           
             <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接3</a>
+              <a href="https://iview.github.io/iview-admin/#/home" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>iview</a>
             </li>
           
             <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接4</a>
+              <a href="http://www.ruanyifeng.com/blog/2012/09/xmlhttprequest_level_2.html" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>cors跨域</a>
             </li>
           
             <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接5</a>
+              <a href="http://www.jb51.net/article/77470.html" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>jspon跨域</a>
             </li>
           
             <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接6</a>
+              <a href="http://mp.weixin.qq.com/s/PL9VfDrWwS6zkA95E-JfLQ" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>前端插件网站</a>
             </li>
           
         </ul>
